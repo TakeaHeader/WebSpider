@@ -43,7 +43,7 @@ public class SingleSpider implements Spider ,Runnable{
 				seeds.remove(0);
 			}
 			try {
-				String content = fetcher.getPageHtml(url);
+				String content = fetcher.getPageContent(url);
 				paser.setContent(content);
 				log.debug("title:"+paser.evalTitle()+";url:"+url+";");
 				List<String> href= paser.hrefs();

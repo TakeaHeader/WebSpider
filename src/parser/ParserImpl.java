@@ -32,8 +32,8 @@ public class ParserImpl extends AbstractParser{
 		Elements elements = document.getElementsByTag("img");
 		Elements as = document.getElementsByTag("a");
 		for (int i = 0; i < as.size(); i++) {
-			if(as.get(i).attr("href").startsWith("/")){
-				list.add("https://www.zhihu.com"+as.get(i).attr("href"));
+			if(as.get(i).attr("href").startsWith("http")){
+				list.add(as.get(i).attr("href"));
 			}
 		}
 		for (int i = 0; i < elements.size(); i++) {
