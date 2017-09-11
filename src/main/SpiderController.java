@@ -5,22 +5,23 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.apache.log4j.Logger;
+import org.jsoup.nodes.Document;
 import parser.Parser;
 import parser.ParserImpl;
 import fetcher.Fetcher;
 import fetcher.FetcherImpl;
-import spider.SingleSpider;
+import spider.UrlSpider;
 
 
 public class SpiderController {
 	
 	private Logger log = Logger.getLogger(getClass());
-//	线程数量
+
 	private int threads = 3;
 	
 	private ExecutorService service;
 	
-	private Fetcher<String> fetcher = new FetcherImpl();
+	private Fetcher<Document> fetcher = new FetcherImpl();
 	
 	private Parser parser = new ParserImpl();
 	
@@ -48,7 +49,7 @@ public class SpiderController {
 	
 	public void start(){
 		for(int i = 0; i < threads; i ++){
-			this.service.execute(new SingleSpider(fetcher,parser,seeds));
+			this.service.execute(new UrlSpider(fetcher,parser,seeds));
 		}
 	}
 	
