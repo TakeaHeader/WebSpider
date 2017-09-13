@@ -1,14 +1,13 @@
 package parser;
 
-import java.util.List;
-
 import org.jsoup.nodes.Document;
+import quenu.Queue;
 
 
 public interface DocumentHandler<T>{
 	
 	
-	Object HandDocument(Document doc,List<T> seeds) throws Exception;
+	Object HandDocument(Document doc,Queue<T> queue) throws Exception;
 	
 	
 }

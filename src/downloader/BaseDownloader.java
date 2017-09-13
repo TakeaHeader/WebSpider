@@ -1,8 +1,8 @@
 package downloader;
 
-import io.IOUtils;
 import java.io.IOException;
 import java.util.Properties;
+
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -12,6 +12,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
+
+import utils.IOUtils;
 
 public abstract class BaseDownloader implements Downloader{
 	

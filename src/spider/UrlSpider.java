@@ -2,32 +2,30 @@ package spider;
 
 import intercept.DefaultIntercepter;
 import intercept.Intecepter;
-
-import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.jsoup.nodes.Document;
-
 import parser.DocumentHandler;
 import parser.Parser;
 import parser.SimpleDoucumentHandler;
+import quenu.Queue;
 import fetcher.Fetcher;
 
 public class UrlSpider implements Runnable{
+	
 	private final Logger log = Logger.getLogger(UrlSpider.class);
 	
 	private Fetcher<Document> fetcher;
 	
-	private List<String> seeds;
+	private Queue<String> urlqueue = null;
 	
 	private DocumentHandler<String> handler  = null ;
 	
 	private final Intecepter asp = new DefaultIntercepter();
 
 	public UrlSpider(Fetcher<Document> fetcher, Parser parser,
-			List<String> seeds) {
+			Queue<String> urlqueue) {
 		this.fetcher = fetcher;
-		this.seeds = seeds;
+		this.urlqueue = urlqueue;
 		this.handler = new SimpleDoucumentHandler();
 	}
 
@@ -40,23 +38,23 @@ public class UrlSpider implements Runnable{
 //		蜘蛛的整个运行过程,交由AspIntercepter去做中间的一些处理
 		while(true){
 			String url = null;
-			synchronized (seeds) {
+			synchronized (urlqueue) {
 				try {
 					Thread.sleep(3000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				while(seeds.size() == 0){
+				while(urlqueue.QueueSize() == 0){
 					try {
-						seeds.notifyAll();
+						urlqueue.notifyAll();
 						log.debug("Thread:"+Thread.currentThread().getName()+"  is waiting!");
-						seeds.wait();
+						urlqueue.wait();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
 //				去掉第一个并返回值
-				url = seeds.remove(0);
+				url = urlqueue.pop();
 //				必须返回true值
 				if(!asp.afterGetSeed(url)) {
 					continue;
@@ -68,7 +66,7 @@ public class UrlSpider implements Runnable{
 				Document content = fetcher.getPageContent(url);
 				asp.afterHanlerDocument(content);
 //				交给DocumentHandler去处理
-				Object obj = handler.HandDocument(content,seeds);
+				Object obj = handler.HandDocument(content,urlqueue);
 				asp.HandlerResult(obj);
 			} catch (Exception e) {
 				e.printStackTrace();

@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import org.apache.log4j.Logger;
 import org.jsoup.nodes.Document;
+
 import parser.Parser;
 import parser.ParserImpl;
+import quenu.Queue;
+import quenu.SingleQueue;
 import fetcher.Fetcher;
 import fetcher.FetcherImpl;
 import spider.UrlSpider;
@@ -25,7 +29,7 @@ public class SpiderController {
 	
 	private Parser parser = new ParserImpl();
 	
-	private List<String> seeds = new ArrayList<String>();
+	private Queue<String> queue = new SingleQueue<String>();
 	
 	public SpiderController() {
 		log.debug("The Spider is starting...");
@@ -43,13 +47,13 @@ public class SpiderController {
 	
 	public SpiderController addSeed(String url){
 		log.debug("The Spider is adding seed " +url);
-		this.seeds.add(url);
+		this.queue.addQueue(url);
 		return this;
 	}
 	
 	public void start(){
 		for(int i = 0; i < threads; i ++){
-			this.service.execute(new UrlSpider(fetcher,parser,seeds));
+			this.service.execute(new UrlSpider(fetcher,parser,queue));
 		}
 	}
 	
