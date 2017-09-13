@@ -12,8 +12,6 @@ public class ParserImpl extends AbstractParser{
 	
 	private final String location = "C:/Users/GCC/Desktop/img/";
 	
-	private Downloader downloader = new SimpleDownLoader();
-
 	public ParserImpl() {
 	}
 	
@@ -41,7 +39,6 @@ public class ParserImpl extends AbstractParser{
 				String string = elements.get(i).attr("src");
 				int index = string.lastIndexOf("/");
 				String newstr = string.substring(index+1, string.length());
-				downloader.DownloadUrl(string, location+newstr);
 			}
 		}
 		return list;

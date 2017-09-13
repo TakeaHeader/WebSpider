@@ -1,12 +1,13 @@
 package spider;
 
+import intercept.DefaultIntercepter;
+import intercept.Intecepter;
+
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.jsoup.nodes.Document;
 
-import aspact.Intecepter;
-import aspact.DefaultIntercepter;
 import parser.DocumentHandler;
 import parser.Parser;
 import parser.SimpleDoucumentHandler;

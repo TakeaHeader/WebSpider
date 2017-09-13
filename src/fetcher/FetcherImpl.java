@@ -1,11 +1,6 @@
 package fetcher;
 
 import java.net.URL;
-import java.util.List;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -24,36 +19,41 @@ public class FetcherImpl implements Fetcher<Document>{
 	
 	public FetcherImpl() {
 		ChromeOptions chrome = new ChromeOptions();
-		//chrome.addArguments("--headless","--disable-gpu");
+		chrome.addArguments("--headless","--disable-gpu");
 		driver = new ChromeDriver(chrome);
 	}
 	
 	@Override
 	public Document getPageContent(String Url) throws Exception{
+		log.debug("Get Document Url:"+ Url);
 		driver.navigate().to(new URL(Url));
 		JavascriptExecutor jse =(JavascriptExecutor)driver;
 		jse.executeScript("window.scrollTo(0,10000)");
-		Thread.sleep(1000);
+		Thread.sleep(5000);
+		WebElement frame = driver.findElement(By.xpath("//*[@id=\"login_frame\"]"));
+		WebDriver dv = driver.switchTo().frame(frame);
+		WebElement elm = dv.findElement(By.xpath("//*[@id=\"switcher_plogin\"]"));
+		elm.click();
+		WebElement el = dv.findElement(By.xpath("//*[@id=\"u\"]"));
+		el.sendKeys("1142482404");
+		WebElement ele = dv.findElement(By.xpath("//*[@id=\"p\"]"));
+		ele.sendKeys("googlezg1");
+		WebElement eleme = dv.findElement(By.xpath("//*[@id=\"login_button\"]"));
+		eleme.click();
+		driver.navigate().to("https://user.qzone.qq.com/1142482404");
 		String content = driver.getPageSource();
-		synchronized (driver) {
-			int temp = 10 ;
-			while(temp != 0) {
-				List<WebElement> list = driver.findElements(By.className("con_list_item"));
-				if(list.size() == 0){
-					break;
-				}
-				for (WebElement webElement : list) {
-					log.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-					log.debug("\n"+webElement.getText());
-				}
-				WebElement element = driver.findElement(By.xpath("//*[@id=\"s_position_list\"]/div[2]/div/a[6]"));
-				element.click();
-				temp --;
-			}
-		}
+		//System.setOut(new PrintStream(new File("C:\\Users\\WJ\\Desktop\\1.txt")));
+		System.out.println(content);
 		return Jsoup.parse(content);
 	}
 	
+	
+	public static void main(String[] args) throws Exception {
+		System.setProperty("webdriver.chrome.driver", "F:/workspace/WebSpider/src/resource/chromedriver.exe");
+		FetcherImpl f = new FetcherImpl();
+		f.getPageContent("https://qzone.qq.com/");
+		
+	}
 	
 
 }
