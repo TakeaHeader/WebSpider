@@ -1,8 +1,8 @@
 package fetcher;
 
-public interface Fetcher<T>{
+public interface Fetcher{
 	
-	public T getPageContent(String Url) throws Exception;
+	public String getPageContent(String Url) throws Exception;
 	
 	
 	

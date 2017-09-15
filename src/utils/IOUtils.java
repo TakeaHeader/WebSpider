@@ -12,7 +12,6 @@ public class IOUtils {
 	private IOUtils(){}
 	
 	/**
-	 * 
 	 * @param bt    写入的字节数组
 	 * @param location 写入的位置
 	 */
@@ -32,6 +31,7 @@ public class IOUtils {
 		}finally{
 			try {
 				if(fos != null) {
+					fos.close();
 				}
 				if(by != null) {
 					fc.close();

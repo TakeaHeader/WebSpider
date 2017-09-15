@@ -1,21 +1,20 @@
 package scheduler;
 
-import java.util.ArrayList;
-import java.util.List;
+import intercept.DefaultIntercepter;
+import intercept.Intecepter;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
-import org.jsoup.nodes.Document;
 
-import parser.Parser;
-import parser.ParserImpl;
+import parser.DocumentHandler;
+import parser.SimpleDoucumentHandler;
 import quenu.Queue;
 import quenu.SingleQueue;
 import fetcher.Fetcher;
 import fetcher.FetcherImpl;
-import spider.UrlSpider;
-
+import spider.UrlSpiderBuilder;
 
 public class SpiderController {
 	
@@ -25,11 +24,13 @@ public class SpiderController {
 	
 	private ExecutorService service;
 	
-	private Fetcher<Document> fetcher = new FetcherImpl();
-	
-	private Parser parser = new ParserImpl();
+	private Fetcher fetcher = new FetcherImpl();
 	
 	private Queue<String> queue = new SingleQueue<String>();
+	
+	private Intecepter intercept = new DefaultIntercepter();
+	
+	private DocumentHandler<String> handler = new SimpleDoucumentHandler();
 	
 	public SpiderController() {
 		log.debug("The Spider is starting...");
@@ -52,8 +53,14 @@ public class SpiderController {
 	}
 	
 	public void start(){
+		Runnable builder = new UrlSpiderBuilder()
+			.SetFetcher(fetcher)
+			.SetQueue(queue)
+			.SetIntecepter(intercept)
+			.SetHandler(handler)
+			.build();
 		for(int i = 0; i < threads; i ++){
-			this.service.execute(new UrlSpider(fetcher,parser,queue));
+				this.service.execute(builder);
 		}
 	}
 	

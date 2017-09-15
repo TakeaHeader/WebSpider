@@ -1,12 +1,11 @@
 package spider;
 
-import intercept.DefaultIntercepter;
+import intercept.InteceptProxy;
 import intercept.Intecepter;
+
 import org.apache.log4j.Logger;
-import org.jsoup.nodes.Document;
+
 import parser.DocumentHandler;
-import parser.Parser;
-import parser.SimpleDoucumentHandler;
 import quenu.Queue;
 import fetcher.Fetcher;
 
@@ -14,41 +13,39 @@ public class UrlSpider implements Runnable{
 	
 	private final Logger log = Logger.getLogger(UrlSpider.class);
 	
-	private Fetcher<Document> fetcher;
+	private Fetcher fetcher;
 	
-	private Queue<String> urlqueue = null;
+	private Queue<String> urlqueue ;
 	
-	private DocumentHandler<String> handler  = null ;
+	private DocumentHandler<?> handler  ;
 	
-	private final Intecepter asp = new DefaultIntercepter();
+	private Intecepter intcept ;
+	
+	private final Object lock = new Object();
 
-	public UrlSpider(Fetcher<Document> fetcher, Parser parser,
-			Queue<String> urlqueue) {
-		this.fetcher = fetcher;
-		this.urlqueue = urlqueue;
-		this.handler = new SimpleDoucumentHandler();
+	public UrlSpider(UrlSpiderBuilder builder) {
+		this.fetcher   =  builder.getFetcher();
+		this.handler   =  builder.getHandler();
+		this.urlqueue  =  builder.getQueue();
+		this.intcept   =  InteceptWarpper.newproxyinstance(builder.getIntecepter());
 	}
-
-	public void SetHandler(DocumentHandler<String> handler) {
-		this.handler = handler;
-    }
 
 	@Override
 	public void run() {
 //		蜘蛛的整个运行过程,交由AspIntercepter去做中间的一些处理
 		while(true){
 			String url = null;
-			synchronized (urlqueue) {
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+			synchronized (lock) {
 				while(urlqueue.QueueSize() == 0){
 					try {
-						urlqueue.notifyAll();
+						lock.notifyAll();
 						log.debug("Thread:"+Thread.currentThread().getName()+"  is waiting!");
-						urlqueue.wait();
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}	
+						lock.wait();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -56,27 +53,40 @@ public class UrlSpider implements Runnable{
 //				去掉第一个并返回值
 				url = urlqueue.pop();
 //				必须返回true值
-				if(!asp.afterGetSeed(url)) {
+				if(!intcept.beforeFetchUrl(url)) {
 					continue;
 				}
 			}
 			try {
 				log.debug("Getting Html "+url);
 //				获取HTML返回Document
-				Document content = fetcher.getPageContent(url);
-				asp.afterHanlerDocument(content);
+				String content = fetcher.getPageContent(url);
+				intcept.afterHanlerDocument(content);
 //				交给DocumentHandler去处理
-				Object obj = handler.HandDocument(content,urlqueue);
-				asp.HandlerResult(obj);
+				Object obj = null;
+				synchronized (lock) {
+					obj = handler.HandDocument(content,urlqueue);
+				}
+				intcept.HandlerResult(obj);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-	
 	}
 
 	
-	
+	private static class InteceptWarpper {
+		
+		private static InteceptProxy ip = new InteceptProxy();
+		
+		public static Intecepter newproxyinstance(Intecepter intercept) {
+			ip.setIntcept(intercept);
+			return ip.newInstance();
+		}
+		
+		
+		
+	}
 	
 	
 	

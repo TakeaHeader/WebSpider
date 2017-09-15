@@ -1,20 +1,26 @@
 package parser;
 
-import java.util.List;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.log4j.Logger;
+
+import quenu.Queue;
 
 public class SimpleDoucumentHandler implements DocumentHandler<String> {
+	
+	
+	private Logger log = Logger.getLogger(getClass());
 
 	@Override
-	public Object HandDocument(Document doc,List<String> seeds) throws Exception {
-		Elements as = doc.getElementsByTag("a");
-		for (Element elemen : as) {
-			String href = elemen.attr("href");
-			if(href.startsWith("https://www.lagou.com/zhaopin")){
-				seeds.add(href);
-			}
+	public Object HandDocument(String doc, Queue<String> queue)
+			throws Exception {
+		Pattern p = Pattern.compile("[a-zA-z]+://[^\\s^\"]*");
+		Matcher m = p.matcher(doc);
+		while (m.find()) {
+			String temp = m.group();
+			queue.addQueue(temp);
+			log.debug(temp);
 		}
 		return null;
 	}
