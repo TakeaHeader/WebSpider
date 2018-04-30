@@ -1,21 +1,7 @@
 package parser;
 
-import java.util.List;
-
-
-public interface Parser {
+public interface Parser <T>{
 	
-	
-	
-	public String evalTitle();
-	
-	
-	public List<String> hrefs();
-	
-	
-	public void setContent(String content);
-	
-	
-	
+	public void Parse(T t) throws Exception;
 
 }

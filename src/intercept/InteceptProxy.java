@@ -30,9 +30,7 @@ public class InteceptProxy implements InvocationHandler{
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args)
 			throws Throwable {
-		log.debug("before intcept:"+method.getName());
 		Object obj = method.invoke(intcept, args);
-		log.debug("after intcept:"+method.getName());
 		return obj;
 	}
 	

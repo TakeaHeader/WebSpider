@@ -5,8 +5,7 @@ import quenu.Queue;
 
 public interface DocumentHandler<T>{
 	
-
-	Object HandDocument(String doc, Queue<String> queue) throws Exception;
+	Object HandDocument(T content, Queue<String> urlqueue)  throws Exception;
 	
 	
 }

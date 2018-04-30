@@ -20,4 +20,9 @@ public class DefaultIntercepter implements Intecepter{
 	public void HandlerResult(Object result) {
 	}
 
+	@Override
+	public void afterHanlerDocument(Object content) {
+		
+	}
+
 }
