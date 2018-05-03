@@ -1,12 +1,10 @@
 package spider;
 
-import java.util.List;
-
 import intercept.InteceptProxy;
 import intercept.Intecepter;
 
 import org.apache.log4j.Logger;
-import org.openqa.selenium.WebElement;
+import org.jsoup.nodes.Document;
 
 import parser.DocumentHandler;
 import quenu.Queue;
@@ -14,13 +12,13 @@ import fetcher.Fetcher;
 
 public class Spider implements Runnable{
 	
-	private final Logger log = Logger.getLogger(Spider.class);
+	private Logger log = Logger.getLogger(getClass());
 	
-	private Fetcher<List<WebElement>> fetcher;
+	private Fetcher<Document> fetcher;
 	
 	private Queue<String> urlqueue ;
 	
-	private DocumentHandler<List<WebElement>> handler  ;
+	private DocumentHandler<Document> handler  ;
 	
 	private Intecepter intcept ;
 	
@@ -41,7 +39,7 @@ public class Spider implements Runnable{
 				while(urlqueue.QueueSize() == 0){
 					try {
 						lock.notifyAll();
-						/*log.debug("Thread:"+Thread.currentThread().getName()+"  is waiting!");*/
+						log.debug("Thread:"+Thread.currentThread().getName()+"  is waiting!");
 						try {
 							Thread.sleep(1000);
 						} catch (InterruptedException e) {
@@ -58,7 +56,7 @@ public class Spider implements Runnable{
 				}
 			}
 			try {
-				List<WebElement> content = fetcher.getPage(url);
+				Document content = fetcher.getPage(url);
 				intcept.afterHanlerDocument(content);
 				Object obj = handler.HandDocument(content,urlqueue);
 				intcept.HandlerResult(obj);

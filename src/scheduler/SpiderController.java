@@ -2,20 +2,16 @@ package scheduler;
 
 import intercept.DefaultIntercepter;
 import intercept.Intecepter;
-
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import org.apache.log4j.Logger;
-import org.openqa.selenium.WebElement;
-
+import org.jsoup.nodes.Document;
 import parser.DocumentHandler;
 import parser.SimpleDoucumentHandler;
 import quenu.Queue;
 import quenu.SingleQueue;
+import fetcher.DefaultDocumentFetcher;
 import fetcher.Fetcher;
-import fetcher.SimpleTagNameFetcher;
 import spider.SpiderBuilder;
 
 public class SpiderController {
@@ -26,13 +22,13 @@ public class SpiderController {
 	
 	private ExecutorService service;
 	
-	private Fetcher<List<WebElement>> fetcher = new SimpleTagNameFetcher();
+	private Fetcher<Document> fetcher = new DefaultDocumentFetcher();
 	
 	private Queue<String> queue = new SingleQueue<String>();
 	
 	private Intecepter intercept = new DefaultIntercepter();
 	
-	private DocumentHandler<List<WebElement>> handler = new SimpleDoucumentHandler();
+	private DocumentHandler<Document> handler = new SimpleDoucumentHandler();
 	
 	public SpiderController() {
 		log.debug("The Spider is starting...");

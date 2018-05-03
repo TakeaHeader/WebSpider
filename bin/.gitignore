@@ -1,9 +1,5 @@
-/spider
-/scheduler
-/fetcher
-/Rule
-/rule
-/resource
-/persistent
-/intercept
+/select_config.xml
+/user_mapper.xml
 /parser
+/fetcher
+/spider

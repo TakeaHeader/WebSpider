@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="huajiface">
+	<select id="selectUrl" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT URL FROM URL WHERE URL = #{URL}
+	</select>
+	
+	<insert id="insertUrl" parameterType="java.util.Map" >
+	INSERT INTO URL VALUES (#{URL})
+	</insert>
+	
+	<insert id="insertcontent" parameterType="java.util.Map" >
+	INSERT INTO article VALUES (#{URL},#{TITLE},#{TEXT})
+	</insert>
+</mapper>

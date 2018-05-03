@@ -1,9 +1,6 @@
 package spider;
 
-import java.util.List;
-
-import org.openqa.selenium.WebElement;
-
+import org.jsoup.nodes.Document;
 import parser.DocumentHandler;
 import intercept.Intecepter;
 import quenu.Queue;
@@ -11,17 +8,17 @@ import fetcher.Fetcher;
 
 public class SpiderBuilder {
 	
-	private Fetcher<List<WebElement>> fetcher;
+	private Fetcher<Document> fetcher;
 	
 	private Queue<String> queue;
 	
 	private Intecepter intecept;
 	
-	private DocumentHandler<List<WebElement>> handler;
+	private DocumentHandler<Document> handler;
 	
 	public SpiderBuilder() {}
 	
-	public SpiderBuilder SetFetcher(Fetcher<List<WebElement>> fetcher){
+	public SpiderBuilder SetFetcher(Fetcher<Document> fetcher){
 		this.fetcher = fetcher;
 		return this;
 	}
@@ -31,7 +28,7 @@ public class SpiderBuilder {
 		return this;
 	}
 	
-	public SpiderBuilder SetHandler(DocumentHandler<List<WebElement>> handler){
+	public SpiderBuilder SetHandler(DocumentHandler<Document> handler){
 		this.handler = handler;
 		return this;
 	}
@@ -45,7 +42,7 @@ public class SpiderBuilder {
 		return new Spider(this);
 	}
 	
-	public Fetcher<List<WebElement>> getFetcher() {
+	public Fetcher<Document> getFetcher() {
 		return fetcher;
 	}
 
@@ -57,7 +54,7 @@ public class SpiderBuilder {
 		return queue;
 	}
 	
-	public DocumentHandler<List<WebElement>> getHandler() {
+	public DocumentHandler<Document> getHandler() {
 		return handler;
 	}
 
